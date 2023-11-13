@@ -23,7 +23,6 @@ def mail():
     print("mail_sending")
     ret = True
     try:
-        global sent_count, subject_index_offset, last_subject_reset_date
         message_index = (
                                 sent_count // 60
                         ) % 3  # Rotate between the three messages for every 60 emails sent
@@ -39,7 +38,8 @@ def mail():
                 last_subject_reset_date = current_date
             else:
                 subject_index_offset += 1
-            sent_count = 0  # Start the loop of about 180 days again
+        sent_count = 0  # Start the loop of about 180 days again
+        
 
         msg = MIMEText(messages, 'plain', 'utf-8')
         msg['From'] = formataddr(["Your son", my_sender])
@@ -59,6 +59,7 @@ def mail():
         with open("email_state.txt", "w") as f:
             f.write(f"{sent_count},{subject_index_offset},{last_subject_reset_date.isoformat()}")
             print("writing success")
+        return sent_count, subject_index_offset, last_subject_reset_date
 
     except Exception as e:
         ret = False
@@ -119,7 +120,7 @@ while True:
                 my_sender
             }
         )  # 括号里的对应发件人邮箱昵称、发件人邮箱账号
-        msg['To'] = formataddr(["CK", “285723576@qq.com”])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
+        msg['To'] = formataddr(["M", "285723576@qq.com"])  # 括号里的对应收件人邮箱昵称、收件人邮箱账号
         msg['Subject'] = f"Program started at {mail_time}\n\nThe automated email program has started."  # 邮件的主题，也可以说是标题
         server = smtplib.SMTP_SSL("smtp.qq.com")
         server.connect("smtp.qq.com", 465)
